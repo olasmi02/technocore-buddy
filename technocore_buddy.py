@@ -172,6 +172,11 @@ def logger_mode(identity_path):
     
     url = input("Enter the public URL of your contribution (e.g. https://x.com/...): ").strip()
     if not url: return
+
+    print("\nLet's customize your X post template!")
+    ctype = input("What did you publish? (e.g., tool, thread, video, article): ").strip() or "tool"
+    audience = input("Who does it help? (e.g., users, agents, developers): ").strip() or "users"
+    benefit = input("What does it help them do? (e.g., quickly chat, understand DIDs): ").strip() or "understand Technocore"
     
     show_rooms_list()
     room = input("Enter the Technocore room to log this in (e.g. flop-alpha): ").strip()
@@ -196,8 +201,8 @@ def logger_mode(identity_path):
         print("Copy and paste the exact text below to claim your airdrop:")
         print("="*55)
         
-        tweet = f"I published a tool for Technocore by @flop_labs.\n\n"
-        tweet += f"It helps users quickly chat & log airdrops via CLI.\n\n"
+        tweet = f"I published a {ctype} for Technocore by @flop_labs.\n\n"
+        tweet += f"It helps {audience} {benefit}.\n\n"
         tweet += f"Contribution: {url}\n"
         tweet += f"Agent DID: {did}\n"
         tweet += f"Signed Technocore record: room {room}, sequence {seq}"
