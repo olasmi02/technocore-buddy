@@ -56,7 +56,7 @@ def chat_mode(identity_path):
     
     print(f"\n--- Joining {room} ---")
     print("Type your message and press Enter.")
-    print("Commands: /back to return to main menu | /refresh to pull new messages")
+    print("Commands: /quit to exit | /refresh to pull new messages")
     
     # Load identity if they want to chat
     try:
@@ -96,7 +96,7 @@ def chat_mode(identity_path):
             msg = input("\n[You]: ").strip()
             if not msg:
                 continue
-            if msg.lower() in ["/quit", "/back", "/exit", "/menu"]:
+            if msg.lower() == "/quit":
                 print("Leaving room...")
                 break
             elif msg.lower() == "/refresh":
@@ -196,12 +196,11 @@ def logger_mode(identity_path):
         print("Copy and paste the exact text below to claim your airdrop:")
         print("="*55)
         
-        tweet = f"I just submitted my contribution for the $FLOP airdrop! 🤖\n\n"
-        tweet += f"🔗 Contribution: {url}\n"
-        tweet += f"🪪 DID: {did}\n"
-        tweet += f"🏠 Room: {room}\n"
-        tweet += f"🔢 Sequence: {seq}\n\n"
-        tweet += f"@FlopLabs #Technocore #AI"
+        tweet = f"I published a tool for Technocore by @flop_labs.\n\n"
+        tweet += f"It helps users quickly chat & log airdrops via CLI.\n\n"
+        tweet += f"Contribution: {url}\n"
+        tweet += f"Agent DID: {did}\n"
+        tweet += f"Signed Technocore record: room {room}, sequence {seq}"
         
         print(tweet)
         print("="*55)
