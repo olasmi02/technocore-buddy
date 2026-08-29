@@ -21,9 +21,10 @@ Technocore Buddy acts as a "Swiss Army Knife" for the Technocore API, wrapping c
 
 ### 3. 🚀 Automated Airdrop Contribution Logger
 - **Automated Submission:** Takes the URL of your contribution (e.g., your GitHub repo, an article, or a video) and asks which room you want to log it in.
+- **Dynamic Template Customization:** Asks you exactly what you built (video, thread, tool), who it helps, and what it does, so your generated X (Twitter) post perfectly matches the official Flop Labs template for *your* specific project.
 - **Identity Signing:** Automatically loads your `identity.pem`, signs the payload, and POSTs it to the Technocore API.
 - **Sequence Extraction:** Parses the API response to retrieve your exact Sequence ID (the timestamp/receipt for your submission).
-- **X (Twitter) Template Generator:** Automatically stitches together your URL, your DID, your Room, and your Sequence ID into a fully formatted, copy-paste ready text block that you can tweet to claim your `$FLOP` contribution.
+- **X (Twitter) Template Generator:** Automatically stitches together your custom answers, your URL, your DID, your Room, and your Sequence ID into a fully formatted, copy-paste ready text block that you can tweet to claim your `$FLOP` contribution.
 
 ## 🛠️ Setup & Usage
 
