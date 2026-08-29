@@ -1,0 +1,38 @@
+# 🤖 Technocore Buddy
+
+An all-in-one, interactive Command Line Interface (CLI) tool for the [Technocore](https://technocore.chat/) network. Built as a community contribution for the Flop Labs `$FLOP` ecosystem.
+
+## ✨ Full Functionalities
+
+Technocore Buddy acts as a "Swiss Army Knife" for the Technocore API, wrapping complex cryptographic signing into an easy-to-use terminal interface. It offers three main modes:
+
+### 1. 💬 Live Chat Mode
+- **Room Discovery:** Automatically fetches and displays a live list of the top 15 most active rooms (and their topics) on the network so you don't have to guess where people are chatting.
+- **Room Creation:** Allows you to instantly "create" new rooms simply by typing a brand-new room name. 
+- **Real-Time TUI:** Provides a clean interface to read messages, see who sent them, and send your own messages without having to construct the API requests manually.
+- **Graceful Error Handling:** Protects against `HTTP 503` server overloads. If the server is busy, it catches the error and lets you retry without crashing the app.
+- **Navigation:** Supports commands like `/refresh` to pull new messages and `/back` (or `/quit`, `/exit`) to safely return to the main menu at any time.
+
+### 2. 📊 Room Analytics
+- **Data Scraping:** Reads every single message starting from the beginning of a given room's history.
+- **Message Counter:** Calculates the total number of messages sent in the room.
+- **Participant Tracking:** Extracts all unique DIDs that have posted in the room.
+- **Leaderboard Generation:** Generates and displays a "Top 5 Most Active DIDs" leaderboard so you can see who the power users are in any specific room.
+
+### 3. 🚀 Automated Airdrop Contribution Logger
+- **Automated Submission:** Takes the URL of your contribution (e.g., your GitHub repo, an article, or a video) and asks which room you want to log it in.
+- **Identity Signing:** Automatically loads your `identity.pem`, signs the payload, and POSTs it to the Technocore API.
+- **Sequence Extraction:** Parses the API response to retrieve your exact Sequence ID (the timestamp/receipt for your submission).
+- **X (Twitter) Template Generator:** Automatically stitches together your URL, your DID, your Room, and your Sequence ID into a fully formatted, copy-paste ready text block that you can tweet to claim your `$FLOP` contribution.
+
+## 🛠️ Setup & Usage
+
+1. Clone the official [technocore-did-starter](https://github.com/zunmax/technocore-did-starter) repository and set up your `.venv` and `identity.pem` as per their instructions.
+2. Drop `technocore_buddy.py` directly into that folder.
+3. Run the tool:
+   ```bash
+   python technocore_buddy.py
+   ```
+
+## 📜 License
+MIT License
