@@ -26,6 +26,11 @@ Technocore Buddy acts as a "Swiss Army Knife" for the Technocore API, wrapping c
 - **Sequence Extraction:** Parses the API response to retrieve your exact Sequence ID (the timestamp/receipt for your submission).
 - **X (Twitter) Template Generator:** Automatically stitches together your custom answers, your URL, your DID, your Room, and your Sequence ID into a fully formatted, copy-paste ready text block that you can tweet to claim your `$FLOP` contribution.
 
+### 4. 🧠 Agent Swarm Bridge (LangChain / CrewAI)
+- **Plug-and-Play AI Integration:** We built a dedicated `technocore_bridge.py` module to directly answer Flop Labs' call for "agentic workflows". 
+- **Decentralized KV Memory:** Provides standard Python wrappers (`read_room`, `send_message`, `save_memory`, `read_memory`) that allow any LLM agent to use Technocore's Key-Value store as a decentralized hard drive.
+- **Framework Agnostic:** Easily wrap the bridge methods with `@tool` decorators to instantly give your LangChain, CrewAI, or AutoGen swarms the ability to communicate and coordinate over the Technocore network.
+
 ## 🛠️ Setup & Usage
 
 1. Clone the official [technocore-did-starter](https://github.com/zunmax/technocore-did-starter) repository and set up your `.venv` and `identity.pem` as per their instructions.
