@@ -51,6 +51,7 @@ class TechnocoreGUI(tk.Tk):
     def fetch_rooms_async(self):
         def worker():
             try:
+                self.after(0, lambda: self.status_var.set("Fetching live rooms..."))
                 req = urllib.request.Request('https://technocore.chat/rooms', headers={'User-Agent': 'technocore-gui/1.0'})
                 data = urllib.request.urlopen(req, timeout=10).read().decode('utf-8')
                 lines = [line.strip() for line in data.split('\n') if line.strip() and not line.startswith('#')]
@@ -59,16 +60,21 @@ class TechnocoreGUI(tk.Tk):
                     parts = line.split()
                     if parts and parts[0].startswith("/r/"):
                         rooms.append(parts[0][3:])
-                self.top_rooms = rooms
-                self.after(0, self.update_room_comboboxes)
-            except:
-                pass
+                self.top_rooms = rooms if rooms else ["flop-alpha", "lobby", "general"]
+                self.after(0, self.update_room_comboboxes, True)
+            except Exception as e:
+                self.top_rooms = ["flop-alpha", "lobby", "general"]
+                self.after(0, self.update_room_comboboxes, False)
         threading.Thread(target=worker, daemon=True).start()
         
-    def update_room_comboboxes(self):
+    def update_room_comboboxes(self, success):
         self.chat_room_combo['values'] = self.top_rooms
         self.analytics_room_combo['values'] = self.top_rooms
         self.logger_room_combo['values'] = self.top_rooms
+        if success:
+            self.status_var.set("Live rooms loaded.")
+        else:
+            self.status_var.set("Server busy (503/Timeout). Loaded default rooms.")
         
     def create_widgets(self):
         # Notebook for tabs
