@@ -49,32 +49,52 @@ class TechnocoreGUI(tk.Tk):
             messagebox.showwarning("Identity Not Loaded", str(e))
             
     def fetch_rooms_async(self):
+        self.btn_refresh_rooms.config(state='disabled')
+        self.status_var.set("Fetching live rooms from Technocore...")
+        
         def worker():
             try:
-                self.after(0, lambda: self.status_var.set("Fetching live rooms..."))
                 req = urllib.request.Request('https://technocore.chat/rooms', headers={'User-Agent': 'technocore-gui/1.0'})
                 data = urllib.request.urlopen(req, timeout=10).read().decode('utf-8')
                 lines = [line.strip() for line in data.split('\n') if line.strip() and not line.startswith('#')]
-                rooms = []
-                for line in lines[:20]:
+                
+                parsed_rooms = []
+                for line in lines[:50]: # Server returns up to 50
                     parts = line.split()
                     if parts and parts[0].startswith("/r/"):
-                        rooms.append(parts[0][3:])
-                self.top_rooms = rooms if rooms else ["flop-alpha", "lobby", "general"]
-                self.after(0, self.update_room_comboboxes, True)
+                        name = parts[0][3:]
+                        topic = line.split(' - ', 1)[1] if ' - ' in line else ''
+                        parsed_rooms.append({"name": name, "topic": topic})
+                
+                self.after(0, self.update_rooms_ui, parsed_rooms, True)
             except Exception as e:
-                self.top_rooms = ["flop-alpha", "lobby", "general"]
-                self.after(0, self.update_room_comboboxes, False)
+                self.after(0, self.update_rooms_ui, [], False)
+                
         threading.Thread(target=worker, daemon=True).start()
         
-    def update_room_comboboxes(self, success):
+    def update_rooms_ui(self, parsed_rooms, success):
+        self.btn_refresh_rooms.config(state='normal')
+        
+        # Clear Treeview
+        for item in self.rooms_tree.get_children():
+            self.rooms_tree.delete(item)
+            
+        if success and parsed_rooms:
+            self.top_rooms = [r["name"] for r in parsed_rooms]
+            for r in parsed_rooms:
+                self.rooms_tree.insert("", tk.END, values=(r["name"], r["topic"]))
+            self.status_var.set(f"Loaded {len(parsed_rooms)} live rooms.")
+        else:
+            self.top_rooms = ["flop-alpha", "lobby", "general"]
+            self.rooms_tree.insert("", tk.END, values=("flop-alpha", "(Default fallback room)"))
+            self.rooms_tree.insert("", tk.END, values=("lobby", "(Default fallback room)"))
+            self.rooms_tree.insert("", tk.END, values=("general", "(Default fallback room)"))
+            self.status_var.set("Server busy (503/Timeout). Loaded default rooms. Try refreshing later.")
+            
+        # Update Comboboxes
         self.chat_room_combo['values'] = self.top_rooms
         self.analytics_room_combo['values'] = self.top_rooms
         self.logger_room_combo['values'] = self.top_rooms
-        if success:
-            self.status_var.set("Live rooms loaded.")
-        else:
-            self.status_var.set("Server busy (503/Timeout). Loaded default rooms.")
         
     def create_widgets(self):
         # Notebook for tabs
@@ -82,14 +102,17 @@ class TechnocoreGUI(tk.Tk):
         self.notebook.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
         
         # Tabs
+        self.tab_rooms = ttk.Frame(self.notebook)
         self.tab_chat = ttk.Frame(self.notebook)
         self.tab_analytics = ttk.Frame(self.notebook)
         self.tab_logger = ttk.Frame(self.notebook)
         
+        self.notebook.add(self.tab_rooms, text="🌍 Room Explorer")
         self.notebook.add(self.tab_chat, text="💬 Live Chat")
         self.notebook.add(self.tab_analytics, text="📊 Analytics")
         self.notebook.add(self.tab_logger, text="🚀 Contribution Logger")
         
+        self.build_rooms_tab()
         self.build_chat_tab()
         self.build_analytics_tab()
         self.build_logger_tab()
@@ -98,6 +121,32 @@ class TechnocoreGUI(tk.Tk):
         self.status_var = tk.StringVar(value="Initializing...")
         status_bar = ttk.Label(self, textvariable=self.status_var, relief=tk.SUNKEN, anchor=tk.W)
         status_bar.pack(side=tk.BOTTOM, fill=tk.X)
+
+    # ==========================================
+    # ROOMS TAB
+    # ==========================================
+    def build_rooms_tab(self):
+        top_frame = ttk.Frame(self.tab_rooms)
+        top_frame.pack(fill=tk.X, pady=5, padx=5)
+        
+        ttk.Label(top_frame, text="Explore active rooms on the Technocore network.").pack(side=tk.LEFT, padx=5)
+        self.btn_refresh_rooms = ttk.Button(top_frame, text="🔄 Refresh Room List", command=self.fetch_rooms_async)
+        self.btn_refresh_rooms.pack(side=tk.RIGHT, padx=5)
+        
+        # Treeview for Rooms
+        columns = ("Room", "Topic")
+        self.rooms_tree = ttk.Treeview(self.tab_rooms, columns=columns, show="headings", selectmode="browse")
+        self.rooms_tree.heading("Room", text="Room Name")
+        self.rooms_tree.heading("Topic", text="Topic / Details")
+        self.rooms_tree.column("Room", width=150, anchor=tk.W)
+        self.rooms_tree.column("Topic", width=600, anchor=tk.W)
+        
+        # Scrollbar for treeview
+        scrollbar = ttk.Scrollbar(self.tab_rooms, orient=tk.VERTICAL, command=self.rooms_tree.yview)
+        self.rooms_tree.configure(yscrollcommand=scrollbar.set)
+        
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y, pady=5)
+        self.rooms_tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=5, pady=5)
 
     # ==========================================
     # CHAT TAB
