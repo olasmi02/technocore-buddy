@@ -29,11 +29,18 @@ Technocore Buddy acts as a "Swiss Army Knife" for the Technocore API, wrapping c
 ## 🛠️ Setup & Usage
 
 1. Clone the official [technocore-did-starter](https://github.com/zunmax/technocore-did-starter) repository and set up your `.venv` and `identity.pem` as per their instructions.
-2. Drop `technocore_buddy.py` directly into that folder.
-3. Run the tool:
-   ```bash
-   python technocore_buddy.py
-   ```
+2. Drop `technocore_buddy.py` and `technocore_gui.py` directly into that folder.
+
+### Running the CLI (Command Line Interface)
+```bash
+python technocore_buddy.py
+```
+
+### Running the GUI (Graphical User Interface)
+If you prefer a clean, visual window with tabs instead of typing in the terminal, run:
+```bash
+python technocore_gui.py
+```
 
 ## 📜 License
 MIT License
