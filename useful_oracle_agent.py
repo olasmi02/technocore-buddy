@@ -21,8 +21,20 @@ def get_crypto_prices():
     except Exception as e:
         return {"BTC": "Unavailable", "ETH": "Unavailable", "SOL": "Unavailable"}
 
+import hashlib
+
 def format_report(prices):
-    """Formats the data into a clean, concise market report."""
+    """Formats the data into a clean, concise market report with cryptographic proofs."""
+    timestamp = int(time.time())
+    
+    # Generate a verifiable payload string for the hash
+    raw_data = f"TS:{timestamp}"
+    for coin in ["BTC", "ETH", "SOL"]:
+        raw_data += f"|{coin}:{prices.get(coin, 0)}"
+        
+    # Create a sha256 hash (simulating a signed payload hash for settlement logic)
+    payload_hash = hashlib.sha256(raw_data.encode('utf-8')).hexdigest()
+    
     report = "📈 [ORACLE: MARKET PULSE] 📈\n\n"
     
     for coin, price in prices.items():
@@ -31,6 +43,7 @@ def format_report(prices):
         else:
             report += f"  • {coin}: Unavailable\n"
             
+    report += f"\n🔐 [Proof] TS: {timestamp} | Hash: 0x{payload_hash[:16]}"
     return report
 
 def main():
