@@ -82,6 +82,9 @@ def main():
     
     print("\n🚀 Starting Oracle Broadcast Loop (Press Ctrl+C to stop)...\n")
     
+    import sys
+    run_once = "--once" in sys.argv
+    
     try:
         while True:
             if current_balance <= 0:
@@ -109,6 +112,10 @@ def main():
             agent.send_message(room_name, report)
             log(f"✅ Live Pulse Report published to room: /r/{room_name}")
             
+            if run_once:
+                log("🏁 Run-once flag detected. Exiting gracefully.")
+                break
+                
             # Sleep for 1 hour (3600 seconds), but we'll use 60s for testing
             sleep_time = 60 
             log(f"💤 Oracle resting for {sleep_time} seconds until next update...\n")
