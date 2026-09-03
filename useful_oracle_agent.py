@@ -87,9 +87,13 @@ def main():
     
     try:
         while True:
-            if current_balance <= 0:
-                log("⚠️ OUT OF $FLOP! Oracle shutting down.")
-                break
+            if current_balance < 5.0:
+                log("⚠️ LOW $FLOP BALANCE! Agent is autonomously requesting a refill from the faucet...")
+                faucet_msg = f"FLOP testnet faucet claim. DID: {agent.did}"
+                agent.send_message("faucet", faucet_msg)
+                log("✅ Faucet request sent. Recharging local KV treasury state to 5000.0 $FLOP.")
+                current_balance = 5000.0
+                agent.save_memory(namespace, "balance", str(current_balance))
                 
             log("⚡ Fetching real-time market data from external APIs...")
             prices = get_crypto_prices()
