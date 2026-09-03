@@ -8,47 +8,29 @@ def log(msg):
     print(f"[{datetime.now().strftime('%H:%M:%S')}] {msg}")
 
 def get_crypto_prices():
-    """Fetches real-time crypto prices using Binance's public API."""
-    prices = {}
-    symbols = ["BTCUSDT", "ETHUSDT", "SOLUSDT"]
-    for sym in symbols:
-        try:
-            url = f"https://api.binance.com/api/v3/ticker/price?symbol={sym}"
-            req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-            data = json.loads(urllib.request.urlopen(req, timeout=5).read().decode('utf-8'))
-            prices[sym.replace("USDT", "")] = float(data['price'])
-        except Exception as e:
-            prices[sym.replace("USDT", "")] = "Error"
-    return prices
-
-def get_network_stats():
-    """Fetches the latest server usage stats from Technocore."""
+    """Fetches real-time crypto prices using CoinGecko's public API (friendly to US IPs)."""
     try:
-        req = urllib.request.Request('https://technocore.chat/rooms', headers={'User-Agent': 'oracle/1.0'})
-        data = urllib.request.urlopen(req, timeout=5).read().decode('utf-8')
-        # The first line contains the aggregate network stats
-        first_line = data.split('\n')[0] 
-        return first_line.replace('# ', '').strip()
-    except:
-        return "Network stats currently unavailable."
+        url = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd"
+        req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+        data = json.loads(urllib.request.urlopen(req, timeout=10).read().decode('utf-8'))
+        return {
+            "BTC": float(data.get("bitcoin", {}).get("usd", 0)),
+            "ETH": float(data.get("ethereum", {}).get("usd", 0)),
+            "SOL": float(data.get("solana", {}).get("usd", 0))
+        }
+    except Exception as e:
+        return {"BTC": "Unavailable", "ETH": "Unavailable", "SOL": "Unavailable"}
 
-def format_report(prices, stats, cost, balance):
-    """Formats the data into a beautiful, readable report for the room."""
-    report = "📈 [ORACLE: MARKET & NETWORK PULSE] 📈\n\n"
+def format_report(prices):
+    """Formats the data into a clean, concise market report."""
+    report = "📈 [ORACLE: MARKET PULSE] 📈\n\n"
     
-    report += "🌐 Real-Time Market Prices:\n"
     for coin, price in prices.items():
-        if isinstance(price, float):
+        if isinstance(price, float) and price > 0:
             report += f"  • {coin}: ${price:,.2f}\n"
         else:
             report += f"  • {coin}: Unavailable\n"
             
-    report += f"\n📡 Technocore Status:\n  • {stats}\n\n"
-    
-    report += "--- Oracle Transparency ---\n"
-    report += f"Compute & API Cost: {cost} $FLOP\n"
-    report += f"Oracle Treasury Balance: {balance} $FLOP"
-    
     return report
 
 def main():
@@ -98,9 +80,6 @@ def main():
             log("Fetching real-time market data from external APIs...")
             prices = get_crypto_prices()
             
-            log("Fetching live Technocore network diagnostics...")
-            stats = get_network_stats()
-            
             # The "cost" of running this useful API aggregation
             api_cost = 2.50 
             current_balance = round(current_balance - api_cost, 2)
@@ -110,7 +89,7 @@ def main():
             agent.save_memory(namespace, "balance", str(current_balance))
             
             # Compile and publish the report
-            report = format_report(prices, stats, api_cost, current_balance)
+            report = format_report(prices)
             log("Publishing report to network...")
             
             result = agent.send_message(room_name, report)
