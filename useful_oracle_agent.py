@@ -43,7 +43,7 @@ def format_report(prices):
         else:
             report += f"  • {coin}: Unavailable\n"
             
-    report += f"\n🔐 [Proof] TS: {timestamp} | Hash: 0x{payload_hash[:16]}"
+    report += f"\n[SECURE PROOF] TS: {timestamp} | Hash: 0x{payload_hash[:16]}"
     return report
 
 def main():
