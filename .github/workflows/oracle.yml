@@ -29,4 +29,6 @@ jobs:
           echo "$PEM_SECRET" > identity.pem
           
       - name: Run Oracle Agent (Once)
+        env:
+          IDENTITY_PASSWORD: "${{ secrets.IDENTITY_PASSWORD }}"
         run: python useful_oracle_agent.py --once

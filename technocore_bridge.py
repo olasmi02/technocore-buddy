@@ -20,8 +20,12 @@ class TechnocoreBridge:
         self.did = "read-only-agent"
         
         try:
+            import os
+            env_pw = os.environ.get("IDENTITY_PASSWORD")
+            pw_bytes = env_pw.encode('utf-8') if env_pw else None
+            
             # Try to load identity, prompt for password if needed via standard CLI
-            self.priv_key = technocore_agent.load_identity(self.identity_path)
+            self.priv_key = technocore_agent.load_identity(self.identity_path, passphrase=pw_bytes)
             self.did = technocore_agent.did_from_private_key(self.priv_key)
             print(f"[Bridge] Loaded Agent Identity: {self.did[:16]}...")
         except Exception as e:
