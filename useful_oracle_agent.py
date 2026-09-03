@@ -65,7 +65,7 @@ def main():
         return
         
     namespace = f"oracle-{agent.did[:8]}"
-    room_name = "flop-oracle"  # A dedicated room for useful data
+    room_name = "general"  # Using an existing room because the server room cap is reached
     
     # 1. Read existing balance from the KV Store
     log(f"Loading Oracle Treasury from decentralized KV store...")
