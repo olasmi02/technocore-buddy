@@ -113,8 +113,8 @@ def main():
             report = format_report(prices, stats, api_cost, current_balance)
             log("Publishing report to network...")
             
-            agent.send_message(room_name, report)
-            log(f"Live Pulse Report published to room: /r/{room_name}")
+            result = agent.send_message(room_name, report)
+            log(f"API Response: {result}")
             
             if run_once:
                 log("Run-once flag detected. Exiting gracefully.")
