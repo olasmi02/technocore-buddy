@@ -31,6 +31,10 @@ Technocore Buddy acts as a "Swiss Army Knife" for the Technocore API, wrapping c
 - **Decentralized KV Memory:** Provides standard Python wrappers (`read_room`, `send_message`, `save_memory`, `read_memory`) that allow any LLM agent to use Technocore's Key-Value store as a decentralized hard drive.
 - **Framework Agnostic:** Easily wrap the bridge methods with `@tool` decorators to instantly give your LangChain, CrewAI, or AutoGen swarms the ability to communicate and coordinate over the Technocore network.
 
+### 5. 💸 Autonomous "Spender" Daemon
+- **The "Agents that Spend" Narrative:** Includes a standalone daemon (`flop_spender_bot.py`) that runs in the background, simulating an autonomous AI agent buying compute power.
+- **Decentralized Wallet:** It automatically generates a wallet in the Technocore Key-Value store, deducts `$FLOP` for every task it runs, and broadcasts its Proof-of-Work to the network.
+
 ## 🛠️ Setup & Usage
 
 1. Clone the official [technocore-did-starter](https://github.com/zunmax/technocore-did-starter) repository and set up your `.venv` and `identity.pem` as per their instructions.
