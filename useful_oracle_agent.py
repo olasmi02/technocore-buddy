@@ -53,7 +53,7 @@ def format_report(prices, stats, cost, balance):
 
 def main():
     print("="*65)
-    print("📡 HELPFUL ORACLE AGENT 📡".center(65))
+    print("=== HELPFUL ORACLE AGENT ===".center(65))
     print("Providing real-world value & API data to the network".center(65))
     print("="*65)
     
@@ -61,7 +61,7 @@ def main():
     agent = TechnocoreBridge("identity.pem")
     
     if not agent.priv_key:
-        log("❌ CRITICAL: Cannot run oracle agent in read-only mode.")
+        log("CRITICAL: Cannot run oracle agent in read-only mode.")
         return
         
     namespace = f"oracle-{agent.did[:8]}"
@@ -78,7 +78,7 @@ def main():
         current_balance = 5000.0
         agent.save_memory(namespace, "balance", str(current_balance))
 
-    log(f"💰 Oracle Treasury: {current_balance} $FLOP")
+    log(f"Oracle Treasury: {current_balance} $FLOP")
     
     print("\n🚀 Starting Oracle Broadcast Loop (Press Ctrl+C to stop)...\n")
     
@@ -91,20 +91,20 @@ def main():
                 log("⚠️ LOW $FLOP BALANCE! Agent is autonomously requesting a refill from the faucet...")
                 faucet_msg = f"FLOP testnet faucet claim. DID: {agent.did}"
                 agent.send_message("faucet", faucet_msg)
-                log("✅ Faucet request sent. Recharging local KV treasury state to 5000.0 $FLOP.")
+                log("Faucet request sent. Recharging local KV treasury state to 5000.0 $FLOP.")
                 current_balance = 5000.0
                 agent.save_memory(namespace, "balance", str(current_balance))
                 
-            log("⚡ Fetching real-time market data from external APIs...")
+            log("Fetching real-time market data from external APIs...")
             prices = get_crypto_prices()
             
-            log("⚡ Fetching live Technocore network diagnostics...")
+            log("Fetching live Technocore network diagnostics...")
             stats = get_network_stats()
             
             # The "cost" of running this useful API aggregation
             api_cost = 2.50 
             current_balance = round(current_balance - api_cost, 2)
-            log(f"💸 Paid API & Compute Cost: {api_cost} $FLOP. New Balance: {current_balance}")
+            log(f"Paid API & Compute Cost: {api_cost} $FLOP. New Balance: {current_balance}")
             
             # Update network state
             agent.save_memory(namespace, "balance", str(current_balance))
@@ -114,15 +114,15 @@ def main():
             log("Publishing report to network...")
             
             agent.send_message(room_name, report)
-            log(f"✅ Live Pulse Report published to room: /r/{room_name}")
+            log(f"Live Pulse Report published to room: /r/{room_name}")
             
             if run_once:
-                log("🏁 Run-once flag detected. Exiting gracefully.")
+                log("Run-once flag detected. Exiting gracefully.")
                 break
                 
             # Sleep for 1 hour (3600 seconds), but we'll use 60s for testing
             sleep_time = 60 
-            log(f"💤 Oracle resting for {sleep_time} seconds until next update...\n")
+            log(f"Oracle resting for {sleep_time} seconds until next update...\n")
             time.sleep(sleep_time)
             
     except KeyboardInterrupt:
